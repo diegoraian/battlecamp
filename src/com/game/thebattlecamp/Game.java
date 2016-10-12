@@ -40,22 +40,15 @@ public class Game extends JPanel implements Runnable{
 
 	private String message;
 	
-	public Game() {
-		addKeyListener(new ComandsFromKeyboard());
-		requestFocusInWindow();
-		
-		buildFrame();
+	public Game(List<EnemyCanon>  listaDeInimigos, PlayerCanon player){
+		this.listaInimigos = listaDeInimigos;
+		this.player = player;
         if (gameThread == null || !isPlaying) {
             gameThread = new Thread(this);
             gameThread.start();
         }
 	}
-	
-	private void buildFrame() {
-		listaInimigos = new ArrayList<EnemyCanon>();
-		player = new PlayerCanon();
-	}
-	
+		
     public void gameOver()
     {
         Graphics g = this.getGraphics();
@@ -76,7 +69,8 @@ public class Game extends JPanel implements Runnable{
         g.drawString(message, (Constantes.CANVAS_WIDTH - metr.stringWidth(message))/2, 
         		Constantes.CANVAS_HEIGHT/2);
     }
-	@Override
+	
+    @Override
 	public void paint(Graphics g) {
 		super.paint(g);
 		g.setColor(Color.black);
@@ -84,6 +78,7 @@ public class Game extends JPanel implements Runnable{
 				Constantes.CANVAS_WIDTH, Constantes.CANVAS_HEIGHT);
 		if(isPlaying){
 			drawPlayer(g);
+			drawEnemiesCanons(g);
 		}
 	    Toolkit.getDefaultToolkit().sync();
 	    g.dispose();
@@ -94,6 +89,17 @@ public class Game extends JPanel implements Runnable{
 			g.drawImage(player.getImage(), player.getX(), player.getY(), this);
 		}
 	}
+
+	private void drawEnemiesCanons(Graphics g) {
+		//for (int i=0; i < Constantes.DEFAULT_AMOUNT_OF_ENEMIES;i++) {
+			EnemyCanon enemyCanon = new EnemyCanon();
+			listaInimigos.add(enemyCanon);
+			if(enemyCanon.isVisible()){
+				g.drawImage(enemyCanon.getImage(), enemyCanon.getX(), enemyCanon.getY(), this);
+			}
+		//}
+	}
+	
 	
 	public void startLooping()  {
 		
@@ -125,7 +131,6 @@ public class Game extends JPanel implements Runnable{
 			isPlaying = Boolean.FALSE; 
 			return;
 		}
-		player.move();
 	}
 
 	private void sleep() {
@@ -137,28 +142,8 @@ public class Game extends JPanel implements Runnable{
 	}
 	
 
-	
-
-	
-	public class ComandsFromKeyboard extends KeyAdapter {
-	
-		@Override
-		public void keyPressed(KeyEvent e) {
-			System.out.println("Key Pressed");
-		}
-		public void keyReleased(KeyEvent e) {
-			System.out.println("Key Pressed");
-		}
-		
-	}
-
-
-
-
-
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		
+		startLooping();		
 	}
 }

@@ -1,6 +1,12 @@
 package com.game.thebattlecamp.entity;
 
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.net.URL;
+
+import javax.swing.ImageIcon;
+
+import com.game.thebattlecamp.util.GameUtils;
 
 public class Sprite {
 	        private boolean visible;
@@ -12,7 +18,8 @@ public class Sprite {
 	        protected int dy;
 	        protected int width ;
 	    	protected int height;
-	    	
+	    	protected int spriteState = 0;
+	    	protected BufferedImage[] spriteSheetArray;
 	        public Sprite() {
 	            visible = true;
 	        }
@@ -59,5 +66,13 @@ public class Sprite {
 	        public boolean isDying() {
 	            return this.dying;
 	        }
-
+	        
+	        
+			public void atribuirImagem(String caminhoImagem){
+				URL resource = GameUtils.extractURLFromString(caminhoImagem);
+				ImageIcon icon = new ImageIcon(resource);
+				width = icon.getImage().getWidth(null);
+				height = icon.getImage().getHeight(null);
+				setImage(icon.getImage());				
+			}
 }
