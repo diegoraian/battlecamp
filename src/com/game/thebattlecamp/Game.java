@@ -14,7 +14,9 @@ import javax.swing.JPanel;
 
 import com.game.thebattlecamp.entity.EnemyCanon;
 import com.game.thebattlecamp.entity.PlayerCanon;
+import com.game.thebattlecamp.entity.Shot;
 import com.game.thebattlecamp.util.Constantes;
+import com.game.thebattlecamp.util.GameUtils;
 
 public class Game extends JPanel implements Runnable{
 	
@@ -26,7 +28,7 @@ public class Game extends JPanel implements Runnable{
 	
 	private PlayerCanon player = null;
 	
-	private List<EnemyCanon> listaInimigos = null;
+	private List<EnemyCanon> enemiesList = null;
 	
 	private Long lastLoopingTime = null;
 	
@@ -34,25 +36,31 @@ public class Game extends JPanel implements Runnable{
 
 	private static int gameSpeed = Constantes.DEFAULT_GAME_SPEED;
 	
-	private int score = 0 ;
+	private Integer score = 0 ;
 
 	private boolean paused = Boolean.FALSE;
-
+	
 	private String message;
 	
 	public Game(List<EnemyCanon>  listaDeInimigos, PlayerCanon player){
-		this.listaInimigos = listaDeInimigos;
+		this.enemiesList = listaDeInimigos;
 		this.player = player;
+		generateEnemiesList();
         if (gameThread == null || !isPlaying) {
             gameThread = new Thread(this);
             gameThread.start();
         }
 	}
 		
-    public void gameOver()
-    {
-        Graphics g = this.getGraphics();
+    private void generateEnemiesList() {
+    	for(int i=0;i < 3;i++){
+			EnemyCanon enemyCanon = new EnemyCanon();
+			enemiesList.add(enemyCanon);
+    	}
+	}
 
+	public void gameOver(Graphics g)
+	{
         g.setColor(Color.black);
         g.fillRect(Constantes.START_POSITION_X, Constantes.START_POSITION_Y, 
         		Constantes.CANVAS_WIDTH, Constantes.CANVAS_HEIGHT);
@@ -66,7 +74,7 @@ public class Game extends JPanel implements Runnable{
 
         g.setColor(Color.white);
         g.setFont(small);
-        g.drawString(message, (Constantes.CANVAS_WIDTH - metr.stringWidth(message))/2, 
+        g.drawString(Constantes.GAME_OVER, (Constantes.CANVAS_WIDTH - metr.stringWidth(message))/2, 
         		Constantes.CANVAS_HEIGHT/2);
     }
 	
@@ -79,11 +87,35 @@ public class Game extends JPanel implements Runnable{
 		if(isPlaying){
 			drawPlayer(g);
 			drawEnemiesCanons(g);
+			drawShots(g);
+			drawScore(g);
 		}
+		
 	    Toolkit.getDefaultToolkit().sync();
 	    g.dispose();
 	}
 	
+	private void drawScore(Graphics g) {
+		
+        Font small = new Font("Helvetica", Font.BOLD, 14);
+        FontMetrics metrics = this.getFontMetrics(small);
+        g.setColor(Color.white);
+        g.setFont(small);
+        g.drawString("Score: "+ score.toString(), 10, 30); 
+		
+	}
+
+	private void drawShots(Graphics g) {
+		for (Shot shot : player.listOfShots) {
+			if(player.listOfShots.size() > 0){
+				if(shot.isVisible()){
+					g.drawImage(shot.getImage(), shot.getX(), shot.getY(), this);
+				}
+			}
+		}
+		
+	}
+
 	private void drawPlayer(Graphics g) {
 		if(player.isVisible()){
 			g.drawImage(player.getImage(), player.getX(), player.getY(), this);
@@ -91,24 +123,24 @@ public class Game extends JPanel implements Runnable{
 	}
 
 	private void drawEnemiesCanons(Graphics g) {
-		//for (int i=0; i < Constantes.DEFAULT_AMOUNT_OF_ENEMIES;i++) {
-			EnemyCanon enemyCanon = new EnemyCanon();
-			listaInimigos.add(enemyCanon);
-			if(enemyCanon.isVisible()){
-				g.drawImage(enemyCanon.getImage(), enemyCanon.getX(), enemyCanon.getY(), this);
+		for (EnemyCanon enemy : enemiesList) {
+			if(enemiesList.size() > 0){
+				if(enemy.isVisible()){
+					g.drawImage(enemy.getImage(), enemy.getX(), enemy.getY(), this);
+				}
 			}
-		//}
+		}
 	}
 	
 	
-	public void startLooping()  {
+	public void startLooping(Graphics g)  {
 		
 		lastLoopingTime = System.currentTimeMillis();
 		
 		
 		while(isPlaying){
 			repaint();
-			contextoDeAnimacao();
+			animationContext();
 			long diff = System.currentTimeMillis() - lastLoopingTime;
 			
 			if(diff == 0){
@@ -123,14 +155,32 @@ public class Game extends JPanel implements Runnable{
 			}
 			lastLoopingTime = System.currentTimeMillis();
 		}
-		gameOver();
+		gameOver(g);
 	}
 
-	private void contextoDeAnimacao() {
+	private void animationContext() {
 		if(Constantes.LIFE_END.equals(player.life)){
 			isPlaying = Boolean.FALSE; 
 			return;
 		}
+		
+		for (EnemyCanon enemyCanon : enemiesList) {
+			if(enemyCanon.isVisible()){
+				enemyCanon.moveFromRightToLeft();
+			}
+		}
+		
+		for (Shot shot : player.listOfShots) {
+			if(shot.isVisible()){
+				shot.moveShot();
+				for(EnemyCanon enemy: enemiesList){
+					enemy.colision(shot);;
+				}
+			}
+		}
+		
+		
+		
 	}
 
 	private void sleep() {
@@ -144,6 +194,7 @@ public class Game extends JPanel implements Runnable{
 
 	@Override
 	public void run() {
-		startLooping();		
+		Graphics g  = this.getGraphics();
+		startLooping(g);		
 	}
 }

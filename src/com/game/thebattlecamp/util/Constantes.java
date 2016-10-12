@@ -12,6 +12,7 @@ public class Constantes {
 
 	public static final int[] ENEMY_POSITIONS_X = {400,680,610};
 
+
 	public static String MAIN_TITLE = "The BattleCamp";
 	
 	public static String GAME_OVER = "Game Over";
@@ -28,6 +29,8 @@ public class Constantes {
 	
 	public static int START_POSITION_Y = 0;
 	
+	public static final String SHOT_SPRITE_LOCATION = "images/shot.gif";
+	
 	public static String ENEMY_SPRITE_LOCATION = "images/enemy.gif";
 	
 	public static String PLAYER_SPRITE_LOCATION = "images/player.gif";
@@ -36,9 +39,9 @@ public class Constantes {
 	
 	public static String PLAYER_SPRITE_SHEET_LOCATION = "images/spritesheet.png";
 	
-	public static Integer[] PLAYER_POSITIONS_X = {200,150};
+	public static Integer[] PLAYER_POSITIONS_X = {10,10};
 	
-	public static Integer[] PLAYER_POSITIONS_Y = {300,200};
+	public static Integer[] PLAYER_POSITIONS_Y = {300,300};
 	
 	private  Constantes() {
 	}

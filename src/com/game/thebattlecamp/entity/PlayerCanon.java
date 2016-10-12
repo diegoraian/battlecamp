@@ -1,6 +1,8 @@
 package com.game.thebattlecamp.entity;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.game.thebattlecamp.util.Constantes;
 import com.game.thebattlecamp.util.GameUtils;
@@ -11,10 +13,12 @@ public class PlayerCanon extends Sprite{
 	
 	public long timePressed =0l;
 	
+	public List<Shot> listOfShots = new ArrayList<Shot>();
+	
 	public PlayerCanon()  {
 			atribuirImagem(Constantes.PLAYER_SPRITE_LOCATION);
 			Integer[] playerPositions = Constantes.PLAYER_POSITIONS_X;
-			spriteSheetArray = GameUtils.extractImagesFromSpriteSheet(Constantes.PLAYER_SPRITE_SHEET_LOCATION);
+			spriteSheetArray = GameUtils.extractImagesFromPlayerSpriteSheet(Constantes.PLAYER_SPRITE_SHEET_LOCATION);
 			setImage(spriteSheetArray[spriteState]);
 			int index = GameUtils.randomizeStartPosition(playerPositions.length);
 			setX(playerPositions[index]);
@@ -22,12 +26,6 @@ public class PlayerCanon extends Sprite{
 			super.setVisible(true);
 	}
 	
-	public void moveLeftRight(){
-        x += dx;
-        if (x <= 2) x = 2;
-        if (x >= Constantes.CANVAS_WIDTH - 2*width) x = Constantes.CANVAS_WIDTH - 2*width;
-        spriteState = 1;
-	}
 
 	public void moveUpDown(){
         y += dy;
@@ -37,35 +35,27 @@ public class PlayerCanon extends Sprite{
 	}
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-
-        if (key == KeyEvent.VK_LEFT) {
-        	dx = -2;
-        	setImage(spriteSheetArray[1]); 
-        	moveLeftRight();
-        	
-        } if (key == KeyEvent.VK_RIGHT) {
-        	dx = 2;
-        	setImage(spriteSheetArray[2]); 
-        	moveLeftRight();
-        }
         
         if (key == KeyEvent.VK_UP) {
-        	dy = -2;
+        	dy = -10;
         	setImage(spriteSheetArray[3]); 
         	moveUpDown();
         }
         
         if (key == KeyEvent.VK_DOWN){
-        	dy = 2;
+        	dy = 10;
         	setImage(spriteSheetArray[4]); 
         	moveUpDown();
         }
 
-        
+        if (key == KeyEvent.VK_SPACE){
+        	useGun();
+        }        
     }
 
-	private void useBomb() {
-		
+	private void useGun() {
+		Shot shot = new Shot(getX(), getY());
+		listOfShots.add(shot);
 	}
 
 }
