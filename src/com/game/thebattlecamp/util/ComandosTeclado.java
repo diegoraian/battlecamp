@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 
 import com.game.thebattlecamp.entity.PlayerCanon;
 
-public class ComandosTeclado extends KeyAdapter {
+public class ComandosTeclado extends KeyAdapter{
 	PlayerCanon player;
 	public ComandosTeclado() {
 	}

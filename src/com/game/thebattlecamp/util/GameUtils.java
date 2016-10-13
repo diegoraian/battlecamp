@@ -29,6 +29,33 @@ public class GameUtils {
 		return valor;
 	}
 	
+	
+	public static BufferedImage[] extractImagesFromSpriteSheet() {
+		try {
+			final String sheet = Constants.BOSS_SPRITE;
+			final int width = 173;
+			final int height = 158;
+			final int rows = 3 ;
+			final int cols = 4;
+			BufferedImage bigImg = null;	
+			bigImg = ImageIO.read(new File(extractURLFromString(sheet).getPath()));
+	
+			BufferedImage[] sprites = new BufferedImage[rows * cols];
+	
+			for (int i = 0; i < rows; i++)
+			{
+			    for (int j = 0; j < cols; j++)
+			    {
+			        sprites[(i * cols) + j] = bigImg.getSubimage(j * width, i * height, width, height);
+			    }
+			}
+			return sprites;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static BufferedImage[] extractImagesFromPlayerSpriteSheet(String sheet){
 		try {
 			final int width = 10;

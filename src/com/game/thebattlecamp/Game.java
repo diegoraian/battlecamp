@@ -12,6 +12,7 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import com.game.thebattlecamp.entity.Boss;
 import com.game.thebattlecamp.entity.EnemyCanon;
 import com.game.thebattlecamp.entity.PlayerCanon;
 import com.game.thebattlecamp.entity.Shot;
@@ -61,7 +62,7 @@ public class Game extends JPanel implements Runnable{
     	}
 	}
 
-	public void gameOver()
+	public synchronized void gameOver()
 	{
 		Graphics g  = this.getGraphics();
         setBackground(Color.black);
@@ -93,6 +94,7 @@ public class Game extends JPanel implements Runnable{
 			drawEnemiesCanons(g);
 			drawShots(g);
 			drawScore(g);
+			drawBoss(g);
 		}
 		
 	    Toolkit.getDefaultToolkit().sync();
@@ -112,13 +114,17 @@ public class Game extends JPanel implements Runnable{
 	}
 
 	private void drawShots(Graphics g) {
-		for (Shot shot : player.listOfShots) {
-			if(player.listOfShots.size() > 0){
-				if(shot.isVisible()){
-					g.drawImage(shot.getImage(), shot.getX().intValue(), shot.getY().intValue(), this);
+		try {
+			for (Shot shot : player.listOfShots) {
+				if(player.listOfShots.size() > 0){
+					if(shot.isVisible()){
+						g.drawImage(shot.getImage(), shot.getX().intValue(), shot.getY().intValue(), this);
+					}
 				}
-			}
-		}	
+			}	
+		}catch(Exception e){
+			e.getMessage();
+		}
 	}
 
 	private void drawPlayer(Graphics g) {
@@ -137,11 +143,17 @@ public class Game extends JPanel implements Runnable{
 		}
 	}
 	
+	private void drawBoss(Graphics g) {
+		Boss boss = new Boss();
+		//if(boss.isVisible()){
+			g.drawImage(boss.getImage(), boss.getX().intValue(), boss.getY().intValue(), this);
+		//}
+	}
 	
 	public synchronized void startLooping(Graphics g)  {
 		while(isPlaying){
 			repaint();
-			animationContext();
+			animationContext(g);
 			
 			if(player.life < 0){
 				isPlaying = Boolean.FALSE;
@@ -153,7 +165,7 @@ public class Game extends JPanel implements Runnable{
 		gameOver();
 	}
 
-	private  synchronized void animationContext() {
+	private  synchronized void animationContext(Graphics g) {
 		if(Constants.LIFE_END.equals(player.life)){
 			isPlaying = Boolean.FALSE; 
 			return;
@@ -190,19 +202,30 @@ public class Game extends JPanel implements Runnable{
 		}
 		if(rightShots.size() > 0){
 			for (Integer i: rightShots) {
-				player.listOfShots.remove(i);
+				Shot shot = player.listOfShots.get(i);
+				if(!shot.isVisible()){
+					player.listOfShots.remove(i);
+				}
 			}
+		}
+		if(score == 600) {
+		
 		}
 		enemiesDefeated.clear();
 		
-		if(player.lastKeyPressed == 'U' || player.lastKeyPressed == 'D') player.decaimentoDeMovimentoY();
-		if(player.lastKeyPressed == 'L' || player.lastKeyPressed == 'R') player.decaimentoDeMovimentoX();
-		
+		if(player.lastKeyPressed == 'U' || player.lastKeyPressed == 'D') player.moveY();
+		if(player.lastKeyPressed == 'L' || player.lastKeyPressed == 'R') player.moveX();
+		if(player.lastKeyPressed == '9' ||  player.lastKeyPressed == '3' ||
+				player.lastKeyPressed == '1' || player.lastKeyPressed == '7'){
+			player.moveX();
+			player.moveY();
+		}
 		if(enemiesKilled == enemiesList.size() - 2) generateEnemiesList();
 		if(enemiesKilled == enemiesList.size()) isPlaying = Boolean.FALSE;
 		
 		
 	}
+
 
 	private synchronized void sleep() {
 		try{ 
@@ -211,7 +234,7 @@ public class Game extends JPanel implements Runnable{
 			System.out.println();
 		}
 	}
-	
+
 	@Override
 	public synchronized void run() {
 		Graphics g  = this.getGraphics();

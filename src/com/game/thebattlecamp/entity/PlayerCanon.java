@@ -28,31 +28,30 @@ public class PlayerCanon extends Sprite{
             super.setVisible(true);
 	}
 	
-	public void decaimentoDeMovimentoY(){
-		if(lastKeyPressed == 'U'){
+	public void moveY(){
+		if(lastKeyPressed == 'U' || lastKeyPressed == '9' || lastKeyPressed == '7'){
 			y -= vectorVelocity.getY();	
 		}else{
 			y += vectorVelocity.getY();
 		}
-//        if (vectorVelocity.getY() > 0.001d) lastKeyPressed = ' '; 
+		if (y < 10d ) y = 10d;
         if (y >= Constants.CANVAS_HEIGHT - 2*height) y = Constants.CANVAS_HEIGHT - 2.0*height;
-        vectorVelocity.setY(Math.exp(-0.5d*vectorVelocity.getY()) ); 
+        vectorVelocity.setY(Math.exp(-0.5d*vectorVelocity.getY())  - 0.02); 
 	}
 	
-	public void decaimentoDeMovimentoX(){
-		if(lastKeyPressed == 'L'){
+	public void moveX(){
+		if(lastKeyPressed == 'L' || lastKeyPressed == '7' || lastKeyPressed == '1' ){
 			x -= vectorVelocity.getX();	
 		}else{
 			x += vectorVelocity.getX();
 		}
-        //if (vectorVelocity.getX() < 1d) lastKeyPressed = ' ';
+		if (x < 10d) x = 10d;
         if (x >= Constants.CANVAS_WIDTH - 2*width) x = Constants.CANVAS_WIDTH - 2.0*width;
-        vectorVelocity.setX(Math.exp(-0.5d*vectorVelocity.getX())); 
+        vectorVelocity.setX(Math.exp(-0.5d*vectorVelocity.getX()) - 0.02); 
 	}
 	
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-        
         if (key == KeyEvent.VK_UP) {
         	dy = -5;
         	lastKeyPressed = 'U';
@@ -77,13 +76,45 @@ public class PlayerCanon extends Sprite{
         	vectorVelocity.setX((double) dx);
         }
 
-        if (key == KeyEvent.VK_SPACE){
-        	useGun();
-        }        
         if (key == KeyEvent.VK_SHIFT){
         	vectorVelocity.setX(10d);
         	vectorVelocity.setY(10d);
-        }    
+        }
+        
+        if (key == KeyEvent.VK_PAGE_UP  ){
+        	dy = -5;
+        	dx = 2;
+        	lastKeyPressed = '9';
+        	vectorVelocity.setX(10d);
+        	vectorVelocity.setY(10d);
+        }
+        
+        if (key == KeyEvent.VK_PAGE_DOWN){
+        	dy = 5;
+        	dx = -2;
+        	lastKeyPressed = '3';
+        	vectorVelocity.setX(10d);
+        	vectorVelocity.setY(10d);
+        }
+        
+        if (key == KeyEvent.VK_END){
+        	dy = -5;
+        	dx = -2;
+        	lastKeyPressed = '1';
+        	vectorVelocity.setX(10d);
+        	vectorVelocity.setY(10d);
+        }
+        if (key == KeyEvent.VK_HOME){
+        	dy = -5;
+        	dx = -5;
+        	lastKeyPressed = '7';
+        	vectorVelocity.setX(10d);
+        	vectorVelocity.setY(10d);
+        }
+        if (key == KeyEvent.VK_SPACE){
+        	useGun();
+        }        
+        
     }
 	
     public void moveUpDown(){
@@ -103,6 +134,16 @@ public class PlayerCanon extends Sprite{
 	private void useGun() {
 		Shot shot = new Shot(getX(), getY());
 		listOfShots.add(shot);
+	}
+	
+	public Boolean colision(EnemyCanon enemy){
+		if(rectangle.intersects(enemy.rectangle)) {
+			enemy.setVisible(Boolean.FALSE);
+			setDying(true);
+			setVisible(false);
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
 	}
 
 }

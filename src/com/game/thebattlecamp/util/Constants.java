@@ -6,7 +6,7 @@ public class Constants {
 
 	public static final int DEFAULT_GAME_SPEED = 10;
 
-	public static final int DEFAULT_AMOUNT_OF_ENEMIES = 3;
+	public static final int DEFAULT_AMOUNT_OF_ENEMIES = 10;
 
 	public static final int[] ENEMY_POSITIONS_Y = {400,420,580};
 
@@ -31,6 +31,8 @@ public class Constants {
 	public static final String SHOT_SPRITE_LOCATION = "images/shot.gif";
 
 	public static final String BEGIN_SOUND = "sounds/begining.mp3";
+
+	public static final String BOSS_SPRITE = "images/bossSpriteSheet.jpg";
 	
 	public static String ENEMY_SPRITE_LOCATION = "images/enemy.gif";
 	

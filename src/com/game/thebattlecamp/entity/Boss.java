@@ -1,15 +1,16 @@
 package com.game.thebattlecamp.entity;
 
-
 import java.awt.Rectangle;
 
 import com.game.thebattlecamp.util.Constants;
 import com.game.thebattlecamp.util.GameUtils;
 
-public class EnemyCanon extends Sprite {
-	
-	public EnemyCanon(){
-		atribuirImagem(Constants.ENEMY_SPRITE_LOCATION);
+public class Boss extends EnemyCanon{
+
+	public Boss() {
+		setVisible(Boolean.TRUE);
+		spriteSheetArray = GameUtils.extractImagesFromSpriteSheet();
+		setImage(spriteSheetArray[1]);
 		setX((double) Constants.ENEMY_POSITIONS_X[1]);
 		setY(GameUtils.randomizeEnemiesPosition().doubleValue());
 	}
@@ -19,19 +20,8 @@ public class EnemyCanon extends Sprite {
         x -= 0.5 ;
         y = 4*Math.sin(0.2*x) + y ;
         if (x <= 10) {
-        	x = Constants.CANVAS_WIDTH + 2.0;
+        	x = -2.0;
+        	setVisible(false);
         }
 	}
-
-	public Boolean colision(Shot shot){
-		if(rectangle.intersects(shot.rectangle)) {
-			shot.setVisible(Boolean.FALSE);
-			setDying(true);
-			setVisible(false);
-			return Boolean.TRUE;
-		}
-		return Boolean.FALSE;
-	}
-	
-	
 }
