@@ -1,6 +1,7 @@
 package com.game.thebattlecamp.entity;
 
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.net.URL;
@@ -12,14 +13,15 @@ import com.game.thebattlecamp.util.GameUtils;
 public class Sprite {
         private boolean visible;
         private Image image;
-        protected int x;
-        protected int y;
+        protected Double x;
+        protected Double y;
         protected boolean dying;
         protected int dx;
         protected int dy;
         protected int width ;
     	protected int height;
     	protected int spriteState = 0;
+    	protected Rectangle rectangle ;
     	protected BufferedImage[] spriteSheetArray;
     	protected AffineTransform at = new AffineTransform();
         public Sprite() {
@@ -46,18 +48,18 @@ public class Sprite {
             return image;
         }
 
-        public void setX(int x) {
+        public void setX(Double x) {
             this.x = x;
         }
 
-        public void setY(int y) {
+        public void setY(Double y) {
             this.y = y;
         }
-        public int getY() {
+        public Double getY() {
             return y;
         }
 
-        public int getX() {
+        public Double getX() {
             return x;
         }
 

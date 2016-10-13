@@ -1,12 +1,10 @@
 package com.game.thebattlecamp.entity;
 
-import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.game.thebattlecamp.util.Constantes;
-import com.game.thebattlecamp.util.GameUtils;
 
 public class PlayerCanon extends Sprite{
 	
@@ -18,19 +16,20 @@ public class PlayerCanon extends Sprite{
 	
 	public PlayerCanon()  {
 			atribuirImagem(Constantes.PLAYER_SPRITE_LOCATION);
-			spriteSheetArray = GameUtils.extractImagesFromPlayerSpriteSheet(Constantes.PLAYER_SPRITE_SHEET_LOCATION);
-			Image imagem = spriteSheetArray[spriteState];
-			setImage(imagem);
-			setX(10);
-			setY(300);
+			//spriteSheetArray = GameUtils.extractImagesFromPlayerSpriteSheet(Constantes.PLAYER_SPRITE_SHEET_LOCATION);
+			//Image imagem = spriteSheetArray[spriteState];
+			
+//			setImage(imagem);
+			setX(10.0);
+			setY(Constantes.CANVAS_HEIGHT.doubleValue() / 2);
             super.setVisible(true);
 	}
 	
 
 	public void moveUpDown(){
         y += dy;
-        if (y <= 2) y = 2;
-        if (y >= Constantes.CANVAS_HEIGHT - 2*height) y = Constantes.CANVAS_HEIGHT - 2*height;
+        if (y <= 2) y = 2.0;
+        if (y >= Constantes.CANVAS_HEIGHT - 2*height) y = Constantes.CANVAS_HEIGHT - 2.0*height;
         
 	}
     public void keyPressed(KeyEvent e) {
@@ -38,13 +37,11 @@ public class PlayerCanon extends Sprite{
         
         if (key == KeyEvent.VK_UP) {
         	dy = -10;
-        	setImage(spriteSheetArray[3]); 
         	moveUpDown();
         }
         
         if (key == KeyEvent.VK_DOWN){
         	dy = 10;
-        	setImage(spriteSheetArray[4]); 
         	moveUpDown();
         }
 

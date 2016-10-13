@@ -35,7 +35,7 @@ public class Game extends JPanel implements Runnable{
 
 	private boolean paused = Boolean.FALSE;
 	
-	private String message;
+	private Integer enemiesKilled = 0;
 	
 	public Game(List<EnemyCanon>  listaDeInimigos, PlayerCanon player){
 		this.enemiesList = listaDeInimigos;
@@ -48,15 +48,16 @@ public class Game extends JPanel implements Runnable{
 	}
 		
     private void generateEnemiesList() {
-    	for(int i=0;i < 3;i++){
+    	for(int i=0;i < GameUtils.randomizeEnemiesAmount();i++){
 			EnemyCanon enemyCanon = new EnemyCanon();
 			enemiesList.add(enemyCanon);
     	}
 	}
 
-	public void gameOver(Graphics g)
+	public void gameOver()
 	{
-        g.setColor(Color.black);
+		Graphics g  = this.getGraphics();
+        setBackground(Color.black);
         g.fillRect(Constantes.START_POSITION_X, Constantes.START_POSITION_Y, 
         		Constantes.CANVAS_WIDTH, Constantes.CANVAS_HEIGHT);
         g.setColor(new Color(0, 32, 48));
@@ -69,7 +70,7 @@ public class Game extends JPanel implements Runnable{
 
         g.setColor(Color.white);
         g.setFont(small);
-        g.drawString(Constantes.GAME_OVER, (Constantes.CANVAS_WIDTH - metr.stringWidth(message))/2, 
+        g.drawString(Constantes.GAME_OVER, (Constantes.CANVAS_WIDTH - metr.stringWidth(Constantes.GAME_OVER))/2, 
         		Constantes.CANVAS_HEIGHT/2);
     }
 	
@@ -107,7 +108,7 @@ public class Game extends JPanel implements Runnable{
 		for (Shot shot : player.listOfShots) {
 			if(player.listOfShots.size() > 0){
 				if(shot.isVisible()){
-					g.drawImage(shot.getImage(), shot.getX(), shot.getY(), this);
+					g.drawImage(shot.getImage(), shot.getX().intValue(), shot.getY().intValue(), this);
 				}
 			}
 		}	
@@ -115,7 +116,7 @@ public class Game extends JPanel implements Runnable{
 
 	private void drawPlayer(Graphics g) {
 		if(player.isVisible()){
-			g.drawImage(player.getImage(), player.getX(), player.getY(), this);
+			g.drawImage(player.getImage(), player.getX().intValue(), player.getY().intValue(), this);
 		}
 	}
 
@@ -123,7 +124,7 @@ public class Game extends JPanel implements Runnable{
 		for (EnemyCanon enemy : enemiesList) {
 			if(enemiesList.size() > 0){
 				if(enemy.isVisible()){
-					g.drawImage(enemy.getImage(), enemy.getX(), enemy.getY(), this);
+					g.drawImage(enemy.getImage(), enemy.getX().intValue(), enemy.getY().intValue(), this);
 				}
 			}
 		}
@@ -142,7 +143,7 @@ public class Game extends JPanel implements Runnable{
 				sleep();
 			}
 		}
-		gameOver(g);
+		gameOver();
 	}
 
 	private void animationContext() {
@@ -161,16 +162,18 @@ public class Game extends JPanel implements Runnable{
 			if(shot.isVisible()){
 				shot.moveShot();
 				for(EnemyCanon enemy: enemiesList){
-					
-					if(enemy.colision(shot)){
-						enemiesList.remove(enemy);
+					if(enemy.isVisible()){
+						if(enemy.colision(shot)){
+//						enemiesList.remove(enemy);
+						enemiesKilled ++;
 						score +=100;
+						}
 					}
 					
 				}
 			}
 		}
-		
+		if(enemiesKilled == enemiesList.size()) isPlaying = false;
 		
 		
 	}

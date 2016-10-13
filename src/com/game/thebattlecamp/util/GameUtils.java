@@ -1,22 +1,15 @@
 package com.game.thebattlecamp.util;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.Random;
-import sun.audio.*;
-import java.io.*;
+
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-
 import javax.sound.sampled.Clip;
-import com.game.thebattlecamp.Game;
 
 public class GameUtils {
 
@@ -28,11 +21,11 @@ public class GameUtils {
 	}
 	
 	
-	public static int randomizeEnemiesPosition() {
-		int valor = new Random().nextInt(300);
-		while (valor < 30 && valor > 580 ){
-			valor = new Random().nextInt(580);
-		}
+	public static Integer randomizeEnemiesPosition() {
+		Integer valor = new Random().nextInt(Constantes.CANVAS_HEIGHT - 20);
+//		while (valor < 30 || valor > Constantes.CANVAS_HEIGHT - 20 ){
+//			valor = new Random().nextInt(Constantes.CANVAS_HEIGHT);
+//		}
 		return valor;
 	}
 	
@@ -104,8 +97,8 @@ public class GameUtils {
 		return classLoader.getResource(caminhoImagem); 
 	}
 	
-	public static Boolean compareColision(int x1,int y1,int x2, int y2){
-		if(x1==x2 && y1==y2) return Boolean.TRUE;
+	public static Boolean compareColision(Double x1,Double y1,Double x2, Double y2,int width, int height){
+		if(x1 == x2 && y1 < (y2+height) && y1 > (y2-height) ) return Boolean.TRUE;
 		return Boolean.FALSE;
 	}
 	
@@ -123,6 +116,10 @@ public class GameUtils {
 		      }
 		    }
 		  }).start();
+	}
+
+	public static Integer randomizeEnemiesAmount() {
+		return new Random().nextInt(Constantes.AMOUNT_EASY);		
 	}
 
 }
