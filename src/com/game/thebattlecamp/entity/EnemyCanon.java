@@ -21,11 +21,13 @@ public class EnemyCanon extends Sprite {
         }
 	}
 
-	public void colision(Shot shot){
+	public Boolean colision(Shot shot){
 		if(GameUtils.compareColision(shot.getX(),shot.getY(),getX(),getY())) {
 			setDying(true);
 			setVisible(false);
+			return Boolean.TRUE;
 		}
+		return Boolean.FALSE;
 	}
 	
 	

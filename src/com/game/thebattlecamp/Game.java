@@ -5,11 +5,10 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Toolkit;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import com.game.thebattlecamp.entity.EnemyCanon;
@@ -30,11 +29,7 @@ public class Game extends JPanel implements Runnable{
 	
 	private List<EnemyCanon> enemiesList = null;
 	
-	private Long lastLoopingTime = null;
-	
-	private int sleepTime = Constantes.DEFAULT_SLEEP_TIME;
-
-	private static int gameSpeed = Constantes.DEFAULT_GAME_SPEED;
+	private static int GAME_SPEED = Constantes.DEFAULT_GAME_SPEED;
 	
 	private Integer score = 0 ;
 
@@ -85,6 +80,7 @@ public class Game extends JPanel implements Runnable{
 		g.fillRect(Constantes.START_POSITION_X, Constantes.START_POSITION_Y,
 				Constantes.CANVAS_WIDTH, Constantes.CANVAS_HEIGHT);
 		if(isPlaying){
+			drawBackground(g);
 			drawPlayer(g);
 			drawEnemiesCanons(g);
 			drawShots(g);
@@ -94,11 +90,13 @@ public class Game extends JPanel implements Runnable{
 	    Toolkit.getDefaultToolkit().sync();
 	    g.dispose();
 	}
-	
+	private void drawBackground(Graphics g){
+		URL url = GameUtils.extractURLFromString(Constantes.BACKGROUND_IMG_LOCATION);
+		ImageIcon icon = new ImageIcon(url);
+		g.drawImage(icon.getImage(), 0, 0, this);
+	}
 	private void drawScore(Graphics g) {
-		
         Font small = new Font("Helvetica", Font.BOLD, 14);
-        FontMetrics metrics = this.getFontMetrics(small);
         g.setColor(Color.white);
         g.setFont(small);
         g.drawString("Score: "+ score.toString(), 10, 30); 
@@ -112,8 +110,7 @@ public class Game extends JPanel implements Runnable{
 					g.drawImage(shot.getImage(), shot.getX(), shot.getY(), this);
 				}
 			}
-		}
-		
+		}	
 	}
 
 	private void drawPlayer(Graphics g) {
@@ -134,18 +131,9 @@ public class Game extends JPanel implements Runnable{
 	
 	
 	public void startLooping(Graphics g)  {
-		
-		lastLoopingTime = System.currentTimeMillis();
-		
-		
 		while(isPlaying){
 			repaint();
 			animationContext();
-			long diff = System.currentTimeMillis() - lastLoopingTime;
-			
-			if(diff == 0){
-				sleepTime = 10;
-			}
 			
 			if(player.life < 0){
 				isPlaying = Boolean.FALSE;
@@ -153,7 +141,6 @@ public class Game extends JPanel implements Runnable{
 			if(!paused){
 				sleep();
 			}
-			lastLoopingTime = System.currentTimeMillis();
 		}
 		gameOver(g);
 	}
@@ -174,7 +161,12 @@ public class Game extends JPanel implements Runnable{
 			if(shot.isVisible()){
 				shot.moveShot();
 				for(EnemyCanon enemy: enemiesList){
-					enemy.colision(shot);;
+					
+					if(enemy.colision(shot)){
+						enemiesList.remove(enemy);
+						score +=100;
+					}
+					
 				}
 			}
 		}
@@ -185,16 +177,16 @@ public class Game extends JPanel implements Runnable{
 
 	private void sleep() {
 		try{ 
-			Thread.sleep(sleepTime);
+			Thread.sleep(GAME_SPEED);
 		} catch( InterruptedException ae){
-			
+			System.out.println();
 		}
 	}
 	
-
 	@Override
 	public void run() {
 		Graphics g  = this.getGraphics();
-		startLooping(g);		
+		startLooping(g);
+		
 	}
 }

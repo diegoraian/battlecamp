@@ -1,5 +1,6 @@
 package com.game.thebattlecamp.entity;
 
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +18,12 @@ public class PlayerCanon extends Sprite{
 	
 	public PlayerCanon()  {
 			atribuirImagem(Constantes.PLAYER_SPRITE_LOCATION);
-			Integer[] playerPositions = Constantes.PLAYER_POSITIONS_X;
 			spriteSheetArray = GameUtils.extractImagesFromPlayerSpriteSheet(Constantes.PLAYER_SPRITE_SHEET_LOCATION);
-			setImage(spriteSheetArray[spriteState]);
-			int index = GameUtils.randomizeStartPosition(playerPositions.length);
-			setX(playerPositions[index]);
-			setY(playerPositions[index]);
-			super.setVisible(true);
+			Image imagem = spriteSheetArray[spriteState];
+			setImage(imagem);
+			setX(10);
+			setY(300);
+            super.setVisible(true);
 	}
 	
 

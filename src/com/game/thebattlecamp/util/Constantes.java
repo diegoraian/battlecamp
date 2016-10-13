@@ -30,12 +30,14 @@ public class Constantes {
 	public static int START_POSITION_Y = 0;
 	
 	public static final String SHOT_SPRITE_LOCATION = "images/shot.gif";
+
+	public static final String BEGIN_SOUND = "sounds/begining.mp3";
 	
 	public static String ENEMY_SPRITE_LOCATION = "images/enemy.gif";
 	
 	public static String PLAYER_SPRITE_LOCATION = "images/player.gif";
 	
-	public static String BACKGROUND_IMG_LOCATION = "images/background.jpg";
+	public static String BACKGROUND_IMG_LOCATION = "images/background.gif";
 	
 	public static String PLAYER_SPRITE_SHEET_LOCATION = "images/spritesheet.png";
 	

@@ -1,12 +1,22 @@
 package com.game.thebattlecamp.util;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Random;
-
+import sun.audio.*;
+import java.io.*;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+
+import javax.sound.sampled.Clip;
+import com.game.thebattlecamp.Game;
 
 public class GameUtils {
 
@@ -98,4 +108,21 @@ public class GameUtils {
 		if(x1==x2 && y1==y2) return Boolean.TRUE;
 		return Boolean.FALSE;
 	}
+	
+	public static synchronized void playSound(final String url) {
+		  new Thread(new Runnable() {
+		  // The wrapper thread is unnecessary, unless it blocks on the
+		    public void run() {
+		      try {
+		       Clip clip = AudioSystem.getClip();
+		        AudioInputStream inputStream = AudioSystem.getAudioInputStream(extractURLFromString(url));
+		        clip.open(inputStream);
+		        clip.start();
+		      } catch (Exception e) {
+		        System.err.println(e.getMessage());
+		      }
+		    }
+		  }).start();
+	}
+
 }

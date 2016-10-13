@@ -10,18 +10,20 @@ import com.game.thebattlecamp.entity.EnemyCanon;
 import com.game.thebattlecamp.entity.PlayerCanon;
 import com.game.thebattlecamp.util.ComandosTeclado;
 import com.game.thebattlecamp.util.Constantes;
+import com.game.thebattlecamp.util.GameUtils;
 
 public class PainelGame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	
 	public PainelGame() {
+		GameUtils.playSound(Constantes.BEGIN_SOUND);
 		List<EnemyCanon>listaInimigos = new ArrayList<EnemyCanon>();
 		PlayerCanon player = new PlayerCanon();
 		add(new Game(listaInimigos,player));
 		addKeyListener(new ComandosTeclado(player));
         setTitle(Constantes.MAIN_TITLE);
-        setSize(Constantes.CANVAS_HEIGHT, Constantes.CANVAS_WIDTH);
+        setSize(Constantes.CANVAS_WIDTH, Constantes.CANVAS_HEIGHT);
         setLocationRelativeTo(null);
         setFocusable(true);
         setBackground(Color.black);
