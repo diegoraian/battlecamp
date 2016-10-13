@@ -22,10 +22,10 @@ public class GameUtils {
 	
 	
 	public static Integer randomizeEnemiesPosition() {
-		Integer valor = new Random().nextInt(Constantes.CANVAS_HEIGHT - 20);
-//		while (valor < 30 || valor > Constantes.CANVAS_HEIGHT - 20 ){
-//			valor = new Random().nextInt(Constantes.CANVAS_HEIGHT);
-//		}
+		Integer valor = new Random().nextInt(Constants.CANVAS_HEIGHT - 80 );
+		//while (valor < 30 || valor > Constants.CANVAS_HEIGHT - 20 ){
+//			valor = new Random().nextInt(Constants.CANVAS_HEIGHT);
+		//}
 		return valor;
 	}
 	
@@ -119,7 +119,7 @@ public class GameUtils {
 	}
 
 	public static Integer randomizeEnemiesAmount() {
-		return new Random().nextInt(Constantes.AMOUNT_EASY);		
+		return new Random().nextInt(Constants.AMOUNT_EASY);		
 	}
 
 }

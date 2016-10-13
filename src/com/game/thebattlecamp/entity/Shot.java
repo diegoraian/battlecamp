@@ -2,13 +2,12 @@ package com.game.thebattlecamp.entity;
 
 import java.awt.Rectangle;
 
-import com.game.thebattlecamp.util.Constantes;
-import com.game.thebattlecamp.util.GameUtils;
+import com.game.thebattlecamp.util.Constants;
 
 public class Shot extends Sprite{
 	
 	public Shot(Double x, Double y) {
-		atribuirImagem(Constantes.SHOT_SPRITE_LOCATION);
+		atribuirImagem(Constants.SHOT_SPRITE_LOCATION);
 		setX(x);
 		setY(y);
 	}

@@ -1,6 +1,6 @@
 package com.game.thebattlecamp.util;
 
-public class Constantes {
+public class Constants {
 	
 	public static final int DEFAULT_SLEEP_TIME = 10;
 
@@ -46,7 +46,7 @@ public class Constantes {
 	
 	public static Integer AMOUNT_EASY = 10;
 	
-	private  Constantes() {
+	private  Constants() {
 	}
 	
 }

@@ -3,14 +3,14 @@ package com.game.thebattlecamp.entity;
 
 import java.awt.Rectangle;
 
-import com.game.thebattlecamp.util.Constantes;
+import com.game.thebattlecamp.util.Constants;
 import com.game.thebattlecamp.util.GameUtils;
 
 public class EnemyCanon extends Sprite {
 	
 	public EnemyCanon(){
-		atribuirImagem(Constantes.ENEMY_SPRITE_LOCATION);
-		setX((double) Constantes.ENEMY_POSITIONS_X[1]);
+		atribuirImagem(Constants.ENEMY_SPRITE_LOCATION);
+		setX((double) Constants.ENEMY_POSITIONS_X[1]);
 		setY(GameUtils.randomizeEnemiesPosition().doubleValue());
 	}
 	

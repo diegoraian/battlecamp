@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.net.URL;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -14,7 +15,7 @@ import javax.swing.JPanel;
 import com.game.thebattlecamp.entity.EnemyCanon;
 import com.game.thebattlecamp.entity.PlayerCanon;
 import com.game.thebattlecamp.entity.Shot;
-import com.game.thebattlecamp.util.Constantes;
+import com.game.thebattlecamp.util.Constants;
 import com.game.thebattlecamp.util.GameUtils;
 
 public class Game extends JPanel implements Runnable{
@@ -29,7 +30,11 @@ public class Game extends JPanel implements Runnable{
 	
 	private List<EnemyCanon> enemiesList = null;
 	
-	private static int GAME_SPEED = Constantes.DEFAULT_GAME_SPEED;
+	private List<Integer> rightShots = null;
+	
+	private List<Integer> enemiesDefeated = null;
+	
+	private static int GAME_SPEED = Constants.DEFAULT_GAME_SPEED;
 	
 	private Integer score = 0 ;
 
@@ -40,6 +45,8 @@ public class Game extends JPanel implements Runnable{
 	public Game(List<EnemyCanon>  listaDeInimigos, PlayerCanon player){
 		this.enemiesList = listaDeInimigos;
 		this.player = player;
+		this.enemiesDefeated = new Vector<Integer>();
+		this.rightShots = new Vector<Integer>();
 		generateEnemiesList();
         if (gameThread == null || !isPlaying) {
             gameThread = new Thread(this);
@@ -58,28 +65,28 @@ public class Game extends JPanel implements Runnable{
 	{
 		Graphics g  = this.getGraphics();
         setBackground(Color.black);
-        g.fillRect(Constantes.START_POSITION_X, Constantes.START_POSITION_Y, 
-        		Constantes.CANVAS_WIDTH, Constantes.CANVAS_HEIGHT);
+        g.fillRect(Constants.START_POSITION_X, Constants.START_POSITION_Y, 
+        		Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
         g.setColor(new Color(0, 32, 48));
-        g.fillRect(50, Constantes.CANVAS_WIDTH/2 - 30, Constantes.CANVAS_WIDTH-100, 50);
+        g.fillRect(50, Constants.CANVAS_WIDTH/2 - 30, Constants.CANVAS_WIDTH-100, 50);
         g.setColor(Color.white);
-        g.drawRect(50, Constantes.CANVAS_WIDTH/2 - 30, Constantes.CANVAS_WIDTH-100, 50);
+        g.drawRect(50, Constants.CANVAS_WIDTH/2 - 30, Constants.CANVAS_WIDTH-100, 50);
 
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = this.getFontMetrics(small);
 
         g.setColor(Color.white);
         g.setFont(small);
-        g.drawString(Constantes.GAME_OVER, (Constantes.CANVAS_WIDTH - metr.stringWidth(Constantes.GAME_OVER))/2, 
-        		Constantes.CANVAS_HEIGHT/2);
+        g.drawString(Constants.GAME_OVER, (Constants.CANVAS_WIDTH - metr.stringWidth(Constants.GAME_OVER))/2, 
+        		Constants.CANVAS_HEIGHT/2);
     }
 	
     @Override
 	public void paint(Graphics g) {
 		super.paint(g);
 		g.setColor(Color.black);
-		g.fillRect(Constantes.START_POSITION_X, Constantes.START_POSITION_Y,
-				Constantes.CANVAS_WIDTH, Constantes.CANVAS_HEIGHT);
+		g.fillRect(Constants.START_POSITION_X, Constants.START_POSITION_Y,
+				Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
 		if(isPlaying){
 			drawBackground(g);
 			drawPlayer(g);
@@ -92,7 +99,7 @@ public class Game extends JPanel implements Runnable{
 	    g.dispose();
 	}
 	private void drawBackground(Graphics g){
-		URL url = GameUtils.extractURLFromString(Constantes.BACKGROUND_IMG_LOCATION);
+		URL url = GameUtils.extractURLFromString(Constants.BACKGROUND_IMG_LOCATION);
 		ImageIcon icon = new ImageIcon(url);
 		g.drawImage(icon.getImage(), 0, 0, this);
 	}
@@ -131,7 +138,7 @@ public class Game extends JPanel implements Runnable{
 	}
 	
 	
-	public void startLooping(Graphics g)  {
+	public synchronized void startLooping(Graphics g)  {
 		while(isPlaying){
 			repaint();
 			animationContext();
@@ -146,25 +153,27 @@ public class Game extends JPanel implements Runnable{
 		gameOver();
 	}
 
-	private void animationContext() {
-		if(Constantes.LIFE_END.equals(player.life)){
+	private  synchronized void animationContext() {
+		if(Constants.LIFE_END.equals(player.life)){
 			isPlaying = Boolean.FALSE; 
 			return;
 		}
-		
 		for (EnemyCanon enemyCanon : enemiesList) {
 			if(enemyCanon.isVisible()){
 				enemyCanon.moveFromRightToLeft();
 			}
 		}
 		
-		for (Shot shot : player.listOfShots) {
+		for (int j= 0; j < player.listOfShots.size();j++) {
+			Shot shot = player.listOfShots.get(j);
 			if(shot.isVisible()){
 				shot.moveShot();
-				for(EnemyCanon enemy: enemiesList){
+				for(int i = 0  ; i < enemiesList.size();i++){
+					EnemyCanon enemy = enemiesList.get(i);
 					if(enemy.isVisible()){
 						if(enemy.colision(shot)){
-//						enemiesList.remove(enemy);
+						enemiesDefeated.add(i);
+						rightShots.add(j);
 						enemiesKilled ++;
 						score +=100;
 						}
@@ -172,13 +181,30 @@ public class Game extends JPanel implements Runnable{
 					
 				}
 			}
+			
 		}
-		if(enemiesKilled == enemiesList.size()) isPlaying = false;
+		if(enemiesDefeated.size() > 0) {
+			for (Integer i: enemiesDefeated) {
+				enemiesList.remove(i);
+			}
+		}
+		if(rightShots.size() > 0){
+			for (Integer i: rightShots) {
+				player.listOfShots.remove(i);
+			}
+		}
+		enemiesDefeated.clear();
+		
+		if(player.lastKeyPressed == 'U' || player.lastKeyPressed == 'D') player.decaimentoDeMovimentoY();
+		if(player.lastKeyPressed == 'L' || player.lastKeyPressed == 'R') player.decaimentoDeMovimentoX();
+		
+		if(enemiesKilled == enemiesList.size() - 2) generateEnemiesList();
+		if(enemiesKilled == enemiesList.size()) isPlaying = Boolean.FALSE;
 		
 		
 	}
 
-	private void sleep() {
+	private synchronized void sleep() {
 		try{ 
 			Thread.sleep(GAME_SPEED);
 		} catch( InterruptedException ae){
@@ -187,9 +213,8 @@ public class Game extends JPanel implements Runnable{
 	}
 	
 	@Override
-	public void run() {
+	public synchronized void run() {
 		Graphics g  = this.getGraphics();
 		startLooping(g);
-		
 	}
 }
