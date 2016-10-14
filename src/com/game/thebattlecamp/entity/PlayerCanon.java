@@ -19,7 +19,7 @@ public class PlayerCanon extends Sprite{
 	public List<Shot> listOfShots = new java.util.Vector<Shot>();
 	
 	public PlayerCanon()  {
-			atribuirImagem(Constants.PLAYER_SPRITE_LOCATION);
+			setImagem(Constants.PLAYER_SPRITE_LOCATION);
 			//spriteSheetArray = GameUtils.extractImagesFromPlayerSpriteSheet(Constantes.PLAYER_SPRITE_SHEET_LOCATION);
 			//Image imagem = spriteSheetArray[spriteState];
 			//setImage(imagem);
@@ -29,6 +29,7 @@ public class PlayerCanon extends Sprite{
 	}
 	
 	public void moveY(){
+		setLimits();
 		if(lastKeyPressed == 'U' || lastKeyPressed == '9' || lastKeyPressed == '7'){
 			y -= vectorVelocity.getY();	
 		}else{
@@ -40,6 +41,7 @@ public class PlayerCanon extends Sprite{
 	}
 	
 	public void moveX(){
+		setLimits();
 		if(lastKeyPressed == 'L' || lastKeyPressed == '7' || lastKeyPressed == '1' ){
 			x -= vectorVelocity.getX();	
 		}else{
@@ -47,7 +49,7 @@ public class PlayerCanon extends Sprite{
 		}
 		if (x < 10d) x = 10d;
         if (x >= Constants.CANVAS_WIDTH - 2*width) x = Constants.CANVAS_WIDTH - 2.0*width;
-        vectorVelocity.setX(Math.exp(-0.5d*vectorVelocity.getX()) - 0.02); 
+        vectorVelocity.setX(Math.exp(-0.5d*vectorVelocity.getX()) - 0.02);
 	}
 	
     public void keyPressed(KeyEvent e) {
@@ -77,6 +79,7 @@ public class PlayerCanon extends Sprite{
         }
 
         if (key == KeyEvent.VK_SHIFT){
+        	setLimits();
         	vectorVelocity.setX(10d);
         	vectorVelocity.setY(10d);
         }
@@ -139,8 +142,11 @@ public class PlayerCanon extends Sprite{
 	public Boolean colision(EnemyCanon enemy){
 		if(rectangle.intersects(enemy.rectangle)) {
 			enemy.setVisible(Boolean.FALSE);
-			setDying(true);
-			setVisible(false);
+			if(enemy instanceof Boss){
+				life -= 50;
+			}else if (enemy instanceof EnemyCanon){
+				life -= 20;
+			}
 			return Boolean.TRUE;
 		}
 		return Boolean.FALSE;

@@ -7,7 +7,7 @@ import com.game.thebattlecamp.util.Constants;
 public class Shot extends Sprite{
 	
 	public Shot(Double x, Double y) {
-		atribuirImagem(Constants.SHOT_SPRITE_LOCATION);
+		setImagem(Constants.SHOT_SPRITE_LOCATION);
 		setX(x);
 		setY(y);
 	}

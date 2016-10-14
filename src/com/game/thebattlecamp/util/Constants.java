@@ -16,6 +16,10 @@ public class Constants {
 	
 	public static String GAME_OVER = "Game Over";
 	
+	public static String POINTS_DONE = "You've done: ";
+	
+	public static String WON_GAME = "You've Won ";
+	
 	public static Integer CANVAS_HEIGHT = 600;
 
 	public static Integer CANVAS_WIDTH = 600;
@@ -41,6 +45,8 @@ public class Constants {
 	public static String BACKGROUND_IMG_LOCATION = "images/background.jpg";
 	
 	public static String PLAYER_SPRITE_SHEET_LOCATION = "images/spritesheet.png";
+	
+	public static Integer MAXIMUM_MONSTERS_TO_KILL = 50; 
 	
 	public static Integer[] PLAYER_POSITIONS_X = {10,10};
 	

@@ -9,8 +9,9 @@ public class Boss extends EnemyCanon{
 
 	public Boss() {
 		setVisible(Boolean.TRUE);
-		spriteSheetArray = GameUtils.extractImagesFromSpriteSheet();
-		setImage(spriteSheetArray[1]);
+		//spriteSheetArray = GameUtils.extractImagesFromSpriteSheet();
+		//setImage(spriteSheetArray[1]);
+		setImagem("images/player.gif");
 		setX((double) Constants.ENEMY_POSITIONS_X[1]);
 		setY(GameUtils.randomizeEnemiesPosition().doubleValue());
 	}

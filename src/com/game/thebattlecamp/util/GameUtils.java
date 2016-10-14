@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
-
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -131,7 +130,6 @@ public class GameUtils {
 	
 	public static synchronized void playSound(final String url) {
 		  new Thread(new Runnable() {
-		  // The wrapper thread is unnecessary, unless it blocks on the
 		    public void run() {
 		      try {
 		       Clip clip = AudioSystem.getClip();
@@ -141,7 +139,7 @@ public class GameUtils {
 		      } catch (Exception e) {
 		        System.err.println(e.getMessage());
 		      }
-		    }
+    }
 		  }).start();
 	}
 

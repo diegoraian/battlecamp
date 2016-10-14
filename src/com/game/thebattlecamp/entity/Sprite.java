@@ -11,7 +11,7 @@ import javax.swing.ImageIcon;
 import com.game.thebattlecamp.util.GameUtils;
 
 public class Sprite {
-        private boolean visible;
+        protected boolean visible;
         private Image image;
         protected Double x;
         protected Double y;
@@ -21,7 +21,7 @@ public class Sprite {
         protected int width ;
     	protected int height;
     	protected int spriteState = 0;
-    	protected Rectangle rectangle ;
+    	protected Rectangle rectangle = new Rectangle(); ;
     	protected BufferedImage[] spriteSheetArray;
     	protected AffineTransform at = new AffineTransform();
         public Sprite() {
@@ -36,7 +36,7 @@ public class Sprite {
             return visible;
         }
 
-        protected void setVisible(boolean visible) {
+        public void setVisible(boolean visible) {
             this.visible = visible;
         }
 
@@ -72,11 +72,14 @@ public class Sprite {
         }
         
         
-		public void atribuirImagem(String caminhoImagem){
+		public void setImagem(String caminhoImagem){
 			URL resource = GameUtils.extractURLFromString(caminhoImagem);
 			ImageIcon icon = new ImageIcon(resource);
 			width = icon.getImage().getWidth(null);
 			height = icon.getImage().getHeight(null);
 			setImage(icon.getImage());				
+		}
+		public void setLimits(){
+			rectangle.setBounds(x.intValue(), y.intValue(), width + 10 , height + 10);
 		}
 }

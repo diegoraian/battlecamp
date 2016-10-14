@@ -1,4 +1,4 @@
-package com.game.thebattlecamp;
+package com.game.thebattlecamp.panels;
 
 import java.awt.Color;
 import java.util.List;
@@ -7,6 +7,7 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+import com.game.thebattlecamp.Game;
 import com.game.thebattlecamp.entity.EnemyCanon;
 import com.game.thebattlecamp.entity.PlayerCanon;
 import com.game.thebattlecamp.util.ComandosTeclado;
