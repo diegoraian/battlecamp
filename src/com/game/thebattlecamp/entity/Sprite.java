@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 
 import com.game.thebattlecamp.util.GameUtils;
 
-public class Sprite {
+public abstract class Sprite {
         protected boolean visible;
         private Image image;
         protected Double x;
@@ -81,5 +81,15 @@ public class Sprite {
 		}
 		public void setLimits(){
 			rectangle.setBounds(x.intValue(), y.intValue(), width + 10 , height + 10);
+		}
+		
+		public Boolean colision(Sprite sprite){
+			if(rectangle.intersects(sprite.rectangle)) {
+				sprite.setVisible(Boolean.FALSE);
+				setDying(true);
+				setVisible(false);
+				return Boolean.TRUE;
+			}
+			return Boolean.FALSE;
 		}
 }

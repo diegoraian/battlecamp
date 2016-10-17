@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import com.game.thebattlecamp.entity.Boss;
 import com.game.thebattlecamp.entity.EnemyCanon;
+import com.game.thebattlecamp.entity.Meteor;
 import com.game.thebattlecamp.entity.PlayerCanon;
 import com.game.thebattlecamp.entity.Shot;
 import com.game.thebattlecamp.util.Constants;
@@ -37,6 +38,8 @@ public class Game extends JPanel implements Runnable{
 	
 	private List<EnemyCanon> enemiesList = null;
 	
+	private List<Meteor> meteorsList = null;
+	
 	private List<Integer> rightShots = null;
 	
 	private List<Integer> enemiesDefeated = null;
@@ -53,9 +56,11 @@ public class Game extends JPanel implements Runnable{
 		this.enemiesList = listaDeInimigos;
 		this.player = player;
 		this.boss = new Boss();
+		this.meteorsList = new Vector<Meteor>();
 		this.enemiesDefeated = new Vector<Integer>();
 		this.rightShots = new Vector<Integer>();
 		generateEnemiesList();
+		generateMeteorsList();
         if (gameThread == null || !isPlaying) {
             gameThread = new Thread(this);
             gameThread.start();
@@ -68,6 +73,13 @@ public class Game extends JPanel implements Runnable{
 			enemiesList.add(enemyCanon);
     	}
 	}
+    private void generateMeteorsList() {
+    	for(int i=0;i < GameUtils.randomizeEnemiesAmount();i++){
+			Meteor meteor = new Meteor();
+			meteorsList.add(meteor);
+    	}
+	}
+    
 
 	public synchronized void gameOver()
 	{
@@ -102,6 +114,7 @@ public class Game extends JPanel implements Runnable{
 			drawPlayer(g);
 			drawEnemiesCanons(g);
 			drawShots(g);
+			drawMeteors(g);
 			drawTopBar(g);
 			if(enemiesKilled == Constants.MAXIMUM_MONSTERS_TO_KILL){
 				drawBoss(g);
@@ -157,6 +170,14 @@ public class Game extends JPanel implements Runnable{
 		}
 	}
 
+	private void drawMeteors(Graphics g) {
+		for(Meteor meteoro : meteorsList){
+			if(meteoro.isVisible()){
+				g.drawImage(meteoro.getImage(), meteoro.getX().intValue(), meteoro.getY().intValue(), this);
+			}
+		}
+	}
+	
 	private void drawEnemiesCanons(Graphics g) {
 		try{
 			for (EnemyCanon enemy : enemiesList) {
@@ -197,6 +218,15 @@ public class Game extends JPanel implements Runnable{
 			isPlaying = Boolean.FALSE; 
 			return;
 		}
+		
+		for (Meteor meteoro : meteorsList) {
+			if(meteoro.isVisible()){
+				meteoro.move();
+			}else{
+				meteorsList.remove(meteoro);
+			}
+		}
+		
 		for (EnemyCanon enemyCanon : enemiesList) {
 			if(enemyCanon.isVisible()){
 				enemyCanon.moveFromRightToLeft();

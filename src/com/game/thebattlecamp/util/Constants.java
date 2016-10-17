@@ -38,6 +38,8 @@ public class Constants {
 
 	public static final String BOSS_SPRITE = "images/bossSpriteSheet.jpg";
 	
+	public static final String METEOR_SPRITE = "images/meteor.jpg";
+	
 	public static String ENEMY_SPRITE_LOCATION = "images/enemy.gif";
 	
 	public static String PLAYER_SPRITE_LOCATION = "images/ship.gif";

@@ -19,7 +19,6 @@ public class PainelGame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	public PainelGame() {
-		GameUtils.playSound(Constants.BEGIN_SOUND);
 		List<EnemyCanon>listaInimigos = new Vector<EnemyCanon>();
 		PlayerCanon player = new PlayerCanon();
 		add(new Game(listaInimigos,player));
@@ -35,9 +34,7 @@ public class PainelGame extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
-	public static void main(String[] args) {
-		new PainelGame();
-	}
+
 }
 
 

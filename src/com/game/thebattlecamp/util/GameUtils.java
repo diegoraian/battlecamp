@@ -54,7 +54,26 @@ public class GameUtils {
 			return null;
 		}
 	}
+	public static BufferedImage[] extractImagesFromAnySpriteSheet(String sheet,int width, int height,int rows,int cols){
+		try {
+			BufferedImage bigImg = null;	
+			bigImg = ImageIO.read(new File(extractURLFromString(sheet).getPath()));
 	
+			BufferedImage[] sprites = new BufferedImage[rows * cols];
+	
+			for (int i = 0; i < rows; i++)
+			{
+			    for (int j = 0; j < cols; j++)
+			    {
+			        sprites[(i * cols) + j] = bigImg.getSubimage(j * width, i * height, width, height);
+			    }
+			}
+			return sprites;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	public static BufferedImage[] extractImagesFromPlayerSpriteSheet(String sheet){
 		try {
 			final int width = 10;
