@@ -16,7 +16,7 @@ public class Boss extends EnemyCanon{
 		setY(GameUtils.randomizeEnemiesPosition().doubleValue());
 	}
 	
-	public void moveFromRightToLeft(){
+	public Double moveFromRightToLeft(){
 		rectangle = new Rectangle(x.intValue(), y.intValue(), width, height);
         x -= 0.5 ;
         y = 4*Math.sin(0.2*x) + y ;
@@ -24,5 +24,6 @@ public class Boss extends EnemyCanon{
         	x = -2.0;
         	setVisible(false);
         }
+        return x;
 	}
 }

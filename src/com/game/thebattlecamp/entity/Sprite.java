@@ -15,7 +15,6 @@ public abstract class Sprite {
         private Image image;
         protected Double x;
         protected Double y;
-        protected boolean dying;
         protected int dx;
         protected int dy;
         protected int width ;
@@ -62,14 +61,6 @@ public abstract class Sprite {
         public Double getX() {
             return x;
         }
-
-        public void setDying(boolean dying) {
-            this.dying = dying;
-        }
-
-        public boolean isDying() {
-            return this.dying;
-        }
         
         
 		public void setImagem(String caminhoImagem){
@@ -80,13 +71,12 @@ public abstract class Sprite {
 			setImage(icon.getImage());				
 		}
 		public void setLimits(){
-			rectangle.setBounds(x.intValue(), y.intValue(), width + 10 , height + 10);
+			rectangle.setBounds(x.intValue(), y.intValue(), width , height);
 		}
 		
 		public Boolean colision(Sprite sprite){
 			if(rectangle.intersects(sprite.rectangle)) {
 				sprite.setVisible(Boolean.FALSE);
-				setDying(true);
 				setVisible(false);
 				return Boolean.TRUE;
 			}

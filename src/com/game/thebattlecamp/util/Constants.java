@@ -32,6 +32,8 @@ public class Constants {
 	
 	public static int START_POSITION_Y = 0;
 	
+	public static long SHOTS_DELAY = 1200;
+	
 	public static final String SHOT_SPRITE_LOCATION = "images/shot.gif";
 
 	public static final String BEGIN_SOUND = "sounds/begining.mp3";

@@ -7,6 +7,7 @@ import com.game.thebattlecamp.util.Constants;
 import com.game.thebattlecamp.util.Vector;
 
 public class PlayerCanon extends Sprite{
+	public long lastShot = 0;
 	
 	public int life = 100;
 	
@@ -135,17 +136,22 @@ public class PlayerCanon extends Sprite{
 
 
 	private void useGun() {
-		Shot shot = new Shot(getX(), getY());
-		listOfShots.add(shot);
+		if (System.currentTimeMillis() - lastShot > 100){ 
+			Shot shot = new Shot(getX(), getY());
+			listOfShots.add(shot);
+		}
+		lastShot = System.currentTimeMillis();
 	}
-	
-	public Boolean colision(EnemyCanon enemy){
+	@Override
+	public Boolean colision(Sprite enemy){
 		if(rectangle.intersects(enemy.rectangle)) {
 			enemy.setVisible(Boolean.FALSE);
 			if(enemy instanceof Boss){
-				life -= 50;
+				life -= 25;
 			}else if (enemy instanceof EnemyCanon){
-				life -= 20;
+				life -= 10;
+			}else if (enemy instanceof Meteor){
+				life -= 15;
 			}
 			return Boolean.TRUE;
 		}

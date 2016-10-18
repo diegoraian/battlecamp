@@ -20,6 +20,7 @@ public class MainScreen extends JFrame {
 		GameUtils.playSound(Constants.BEGIN_SOUND);
 		add(new MainPanel());
 		setVisible(true);
+		setResizable(Boolean.FALSE);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
 	}

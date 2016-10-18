@@ -13,20 +13,20 @@ public class EnemyCanon extends Sprite {
 
 	}
 	
-	public void moveFromRightToLeft(){
+	public Double moveFromRightToLeft(){
 		
-        x -= 0.5 ;
-        y = 4*Math.sin(0.2*x) + y ;
-        if (x <= 10) {
-        	x = Constants.CANVAS_WIDTH + 2.0;
-        }
-        setLimits();
+	        x -= 0.5 ;
+	        y = 4*Math.sin(0.2*x) + y ;
+	        if (x <= 10) {
+	        	x = Constants.CANVAS_WIDTH + 2.0;
+	        }
+	        setLimits();
+        return x;
 	}
 
 	public Boolean colision(Shot shot){
 		if(rectangle.intersects(shot.rectangle)) {
 			shot.setVisible(Boolean.FALSE);
-			setDying(true);
 			setVisible(false);
 			return Boolean.TRUE;
 		}

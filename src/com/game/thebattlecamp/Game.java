@@ -38,11 +38,13 @@ public class Game extends JPanel implements Runnable{
 	
 	private List<EnemyCanon> enemiesList = null;
 	
+	private List<Integer> enemiesDefeated = null;
+	
 	private List<Meteor> meteorsList = null;
 	
-	private List<Integer> rightShots = null;
+	private List<Integer> meteorsDestroyedList = null;
 	
-	private List<Integer> enemiesDefeated = null;
+	private List<Integer> rightShots = null;
 	
 	private static int GAME_SPEED = Constants.DEFAULT_GAME_SPEED;
 	
@@ -51,12 +53,13 @@ public class Game extends JPanel implements Runnable{
 	private boolean paused = Boolean.FALSE;
 	
 	private Integer enemiesKilled = 0;
-	
+
 	public Game(List<EnemyCanon>  listaDeInimigos, PlayerCanon player){
 		this.enemiesList = listaDeInimigos;
 		this.player = player;
 		this.boss = new Boss();
 		this.meteorsList = new Vector<Meteor>();
+		this.meteorsDestroyedList = new Vector<Integer>();
 		this.enemiesDefeated = new Vector<Integer>();
 		this.rightShots = new Vector<Integer>();
 		generateEnemiesList();
@@ -71,9 +74,18 @@ public class Game extends JPanel implements Runnable{
     	for(int i=0;i < GameUtils.randomizeEnemiesAmount();i++){
 			EnemyCanon enemyCanon = new EnemyCanon();
 			enemiesList.add(enemyCanon);
+			if(i>0) {
+				if(enemiesList.get(i).colision(enemiesList.get(i-1))){
+					enemiesList.remove(i);
+				}
+			}
     	}
 	}
     private void generateMeteorsList() {
+    	Integer amount = GameUtils.randomizeEnemiesAmount();
+    	while(amount <= 0 || amount >=5){
+    		 amount = GameUtils.randomizeEnemiesAmount();
+    	}
     	for(int i=0;i < GameUtils.randomizeEnemiesAmount();i++){
 			Meteor meteor = new Meteor();
 			meteorsList.add(meteor);
@@ -116,9 +128,9 @@ public class Game extends JPanel implements Runnable{
 			drawShots(g);
 			drawMeteors(g);
 			drawTopBar(g);
-			if(enemiesKilled == Constants.MAXIMUM_MONSTERS_TO_KILL){
-				drawBoss(g);
-			}
+			//if(enemiesKilled == Constants.MAXIMUM_MONSTERS_TO_KILL){
+				//drawBoss(g);
+			//}
 		}
 		
 	    Toolkit.getDefaultToolkit().sync();
@@ -137,7 +149,7 @@ public class Game extends JPanel implements Runnable{
         g.setFont(small);
         g.drawString("Score: "+ score.toString(), 10, 30);
 
-        g.drawString("Killed: "+ counterMonstersKilled +"/"+ Constants.MAXIMUM_MONSTERS_TO_KILL,
+        g.drawString("Killed: "+ counterMonstersKilled,
         		Constants.CANVAS_WIDTH/2 - 50 , 30);
         
         if(player.life < 50){
@@ -158,7 +170,7 @@ public class Game extends JPanel implements Runnable{
 						g.drawImage(shot.getImage(), shot.getX().intValue(), shot.getY().intValue(), this);
 					}
 				}
-			}	
+			}
 		}catch(Exception e){
 			e.getMessage();
 		}
@@ -174,6 +186,16 @@ public class Game extends JPanel implements Runnable{
 		for(Meteor meteoro : meteorsList){
 			if(meteoro.isVisible()){
 				g.drawImage(meteoro.getImage(), meteoro.getX().intValue(), meteoro.getY().intValue(), this);
+				if(meteoro.isVisible()){
+					if(meteoro.getLife() == 3){
+						g.setColor(Color.green);
+					}if(meteoro.getLife() == 2){
+						g.setColor(Color.yellow);
+					}else if(meteoro.getLife() == 1){
+						g.setColor(Color.red);
+					}
+					 g.fillRect(meteoro.getX().intValue()+30, meteoro.getY().intValue()+30, meteoro.getLife()*20, 2);
+				}
 			}
 		}
 	}
@@ -199,6 +221,7 @@ public class Game extends JPanel implements Runnable{
 	}
 	
 	public synchronized void startLooping(Graphics g)  {
+		
 		while(isPlaying){
 			repaint();
 			animationContext(g);
@@ -218,20 +241,39 @@ public class Game extends JPanel implements Runnable{
 			isPlaying = Boolean.FALSE; 
 			return;
 		}
-		
-		for (Meteor meteoro : meteorsList) {
-			if(meteoro.isVisible()){
-				meteoro.move();
-			}else{
-				meteorsList.remove(meteoro);
-			}
-		}
-		
+		//Movements
+
+		//Enemies moves
 		for (EnemyCanon enemyCanon : enemiesList) {
 			if(enemyCanon.isVisible()){
-				enemyCanon.moveFromRightToLeft();
+				if(enemyCanon.moveFromRightToLeft() < 11) player.life -= 5;
 			}
 		}
+		//Meteors moves
+		for(Meteor meteor : meteorsList) {
+			meteor.move();
+			if(meteor.isVisible()){
+				if(player.colision(meteor) ){
+					if(player.life == 0){
+						isPlaying = false;
+						return;
+					}
+				}
+			}
+		}
+		// keyboard movements
+		if(player.lastKeyPressed == 'U' || player.lastKeyPressed == 'D') player.moveY();
+		if(player.lastKeyPressed == 'L' || player.lastKeyPressed == 'R') player.moveX();
+		if(player.lastKeyPressed == '9' ||  player.lastKeyPressed == '3' ||
+			player.lastKeyPressed == '1' || player.lastKeyPressed == '7'){
+			player.moveX();
+			player.moveY();
+		}
+		
+		
+		
+		// Intersection between a meteor and the player; 
+	
 		for (int j= 0; j < player.listOfShots.size();j++) {
 			Shot shot = player.listOfShots.get(j);
 			if(shot.isVisible()){
@@ -240,29 +282,43 @@ public class Game extends JPanel implements Runnable{
 					EnemyCanon enemy = enemiesList.get(i);
 					if(enemy.isVisible()){
 						if(enemy.colision(shot)){
-						enemiesDefeated.add(i);
-						rightShots.add(j);
-						counterMonstersKilled +=1;
-						enemiesKilled ++;
-						score +=100;
+							enemiesDefeated.add(i);
+							rightShots.add(j);
+							counterMonstersKilled +=1;
+							enemiesKilled ++;
+							score +=10;
 						}
-						if(player.colision(enemy)){
+						if(player.colision(enemy) ){
 							if(player.life == 0){
 								isPlaying = false;
 								return;
 							}
 						}
+						for(Meteor meteor : meteorsList) {
+							if(meteor.isVisible()){
+								if(meteor.colision(shot) ){
+									Integer life = meteor.getLife();
+									rightShots.add(j);
+									meteor.setLife(life--);
+									if(life == 0) score +=100;
+									break;
+								}
+							}
+						}
 					}
-					
 				}
 			}
 		}
 		
+		// intersection between a meteor and the player; 
+		
+		//clean objects
 		if(enemiesDefeated.size() > 0) {
 			for (Integer i: enemiesDefeated) {
 				enemiesList.remove(i);
 			}
 		}
+		
 		
 		if(rightShots.size() > 0){
 			for (Integer i: rightShots) {
@@ -273,18 +329,7 @@ public class Game extends JPanel implements Runnable{
 			}
 		}
 		
-		if(counterMonstersKilled >= Constants.MAXIMUM_MONSTERS_TO_KILL) {
-			boss.moveFromRightToLeft();
-			enemiesList.clear();
-		}
-		
-		if(player.lastKeyPressed == 'U' || player.lastKeyPressed == 'D') player.moveY();
-		if(player.lastKeyPressed == 'L' || player.lastKeyPressed == 'R') player.moveX();
-		if(player.lastKeyPressed == '9' ||  player.lastKeyPressed == '3' ||
-			player.lastKeyPressed == '1' || player.lastKeyPressed == '7'){
-			player.moveX();
-			player.moveY();
-		}
+		//create enemies
 		if(nextWave  >  GAME_SPEED*300){ 
 			generateEnemiesList();
 			nextWave = 0l;
